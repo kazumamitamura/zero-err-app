@@ -7,11 +7,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useWatch } from "react-hook-form";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Copy, Check } from "lucide-react";
 import type { ZeTemplate } from "../ze_templates/types";
+import type { ZeSchemaField } from "../ze_templates/types";
 import { zeReplacePlaceholders } from "./zeReplacePlaceholders";
 import { zeBuildFormSchema } from "./zeBuildFormSchema";
+import { zeExtractPlaceholderKeys } from "./zeExtractPlaceholderKeys";
 
 interface ZeGeneratorWizardProps {
   template: ZeTemplate;
@@ -21,8 +23,15 @@ interface ZeGeneratorWizardProps {
 type FormValues = Record<string, string>;
 
 export function ZeGeneratorWizard({ template, onBack }: ZeGeneratorWizardProps) {
-  const fields = template.content_schema?.fields ?? [];
-  const schema = zeBuildFormSchema(template.content_schema);
+  const fields = useMemo(() => {
+    const fromSchema = template.content_schema?.fields ?? [];
+    if (fromSchema.length > 0) return fromSchema;
+    const keys = zeExtractPlaceholderKeys(template.fixed_text);
+    return keys.map((key): ZeSchemaField => ({ key, label: key, type: "text", required: false }));
+  }, [template.content_schema?.fields, template.fixed_text]);
+
+  const contentSchemaForValidation = useMemo(() => ({ fields }), [fields]);
+  const schema = zeBuildFormSchema(contentSchemaForValidation);
   const defaultValues: FormValues = {};
   fields.forEach((field) => {
     defaultValues[field.key] = "";
@@ -68,6 +77,13 @@ export function ZeGeneratorWizard({ template, onBack }: ZeGeneratorWizardProps) 
 
       <h2 className="text-xl font-bold text-slate-800">{template.title}</h2>
 
+      <div className="rounded-lg bg-slate-100 p-3 text-sm text-slate-700">
+        <p className="font-medium text-slate-800">入力の仕方</p>
+        <p className="mt-1">
+          下の入力欄に値を入れると、プレビュー内の <code className="rounded bg-slate-200 px-1">{{"{{キー名}}"}}</code> がその値に置き換わります。キー名と入力項目の「キー」は同じにしてください。
+        </p>
+      </div>
+
       <form className="space-y-4">
         {fields.map((field) => (
           <div key={field.key}>
@@ -94,7 +110,7 @@ export function ZeGeneratorWizard({ template, onBack }: ZeGeneratorWizardProps) 
 
       <section aria-label="プレビュー">
         <div className="mb-2 flex items-center justify-between gap-2">
-          <span className="text-sm font-medium text-slate-700">プレビュー（編集不可）</span>
+          <span className="text-sm font-medium text-slate-700">プレビュー（編集不可・ここに入力が反映されます）</span>
           <button
             type="button"
             onClick={handleCopy}

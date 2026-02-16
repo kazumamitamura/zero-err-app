@@ -9,13 +9,13 @@ export default function HomePage() {
           href="/templates"
           className="flex min-h-[80px] items-center justify-center rounded-xl border-2 border-slate-200 bg-white px-6 py-4 text-lg font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
         >
-          Use Template
+          テンプレートを使う
         </Link>
         <Link
           href="/templates/new"
           className="flex min-h-[80px] items-center justify-center rounded-xl border-2 border-slate-200 bg-white px-6 py-4 text-lg font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
         >
-          Create New
+          テンプレートを追加
         </Link>
       </div>
     </main>

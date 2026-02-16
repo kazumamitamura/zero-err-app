@@ -1,3 +1,4 @@
 export { ZeGeneratorWizard } from "./ZeGeneratorWizard";
 export { zeReplacePlaceholders } from "./zeReplacePlaceholders";
 export { zeBuildFormSchema } from "./zeBuildFormSchema";
+export { zeExtractPlaceholderKeys } from "./zeExtractPlaceholderKeys";

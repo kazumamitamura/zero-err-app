@@ -8,7 +8,7 @@ export default function TemplatesPage() {
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-slate-800">Use Template</h1>
+      <h1 className="mb-6 text-2xl font-bold text-slate-800">テンプレートを使う</h1>
 
       {loading && (
         <p className="text-slate-600">読み込み中…</p>
@@ -21,7 +21,7 @@ export default function TemplatesPage() {
       )}
 
       {!loading && !error && templates.length === 0 && (
-        <p className="text-slate-600">テンプレートがありません。ホームから新規作成できます。</p>
+        <p className="text-slate-600">テンプレートがありません。ホームの「テンプレートを追加」から作成できます。</p>
       )}
 
       {!loading && !error && templates.length > 0 && (
