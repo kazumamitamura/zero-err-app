@@ -117,8 +117,8 @@ export default function NewTemplatePage() {
         <p className="font-medium text-slate-800">追加の仕方（ワード・エクセル・ドキュメント・スプレッドシート対応）</p>
         <ul className="mt-2 list-inside list-disc space-y-1">
           <li>ワード・エクセル・Googleドキュメント・スプレッドシートなどから、使いたい文章を<strong>コピーして「本文」に貼り付け</strong>ます。</li>
-          <li>入力してもらいたい部分は <code className="rounded bg-slate-200 px-1">{{"{{キー名}}"}}</code> で囲みます。</li>
-          <li>例：到着が <code className="rounded bg-slate-200 px-1">{{"{{分数}}"}}</code> 分遅れる → 本文に「分数」と入力する欄ができます。</li>
+          <li>入力してもらいたい部分は <code className="rounded bg-slate-200 px-1">{"{{キー名}}"}</code> で囲みます。</li>
+          <li>例：到着が <code className="rounded bg-slate-200 px-1">{"{{分数}}"}</code> 分遅れる → 本文に「分数」と入力する欄ができます。</li>
           <li>「キー名」は半角英数字がおすすめです（例：<code>minutes</code>, <code>station</code>, <code>理由</code> も可）。</li>
         </ul>
       </div>

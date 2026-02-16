@@ -80,7 +80,7 @@ export function ZeGeneratorWizard({ template, onBack }: ZeGeneratorWizardProps) 
       <div className="rounded-lg bg-slate-100 p-3 text-sm text-slate-700">
         <p className="font-medium text-slate-800">入力の仕方</p>
         <p className="mt-1">
-          下の入力欄に値を入れると、プレビュー内の <code className="rounded bg-slate-200 px-1">{{"{{キー名}}"}}</code> がその値に置き換わります。キー名と入力項目の「キー」は同じにしてください。
+          下の入力欄に値を入れると、プレビュー内の <code className="rounded bg-slate-200 px-1">{"{{キー名}}"}</code> がその値に置き換わります。キー名と入力項目の「キー」は同じにしてください。
         </p>
       </div>
 
