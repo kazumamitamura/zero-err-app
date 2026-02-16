@@ -1,20 +1,26 @@
 import { z } from "zod";
-import type { ZeContentSchema } from "../ze_templates/types";
+// もし型定義のインポートパスが違う場合は調整してください
+import { ZeContentSchema } from "@/features/ze_templates/types"; 
 
-/**
- * content_schema から react-hook-form 用の Zod スキーマを動的生成する。
- * required のときは必須、それ以外は optional（空文字許可）。
- */
-export function zeBuildFormSchema(contentSchema: ZeContentSchema): z.ZodObject<Record<string, z.ZodString>> {
-  const shape: Record<string, z.ZodString> = {};
-  const fields = contentSchema?.fields ?? [];
+export function zeBuildFormSchema(schema: ZeContentSchema) {
+  // 【重要】ここに : Record<string, z.ZodTypeAny> を追加して、
+  // 必須(String)も任意(Optional)も許容するようにします。
+  const shape: Record<string, z.ZodTypeAny> = {};
 
-  for (const field of fields) {
+  // fieldsが存在しない場合のガード
+  if (!schema.fields) {
+    return z.object({});
+  }
+
+  for (const field of schema.fields) {
     const base = z.string();
+    
+    // required が true なら必須、false なら任意（デフォルト空文字）
+    // ※ ここで型が分岐するため、上記の ZodTypeAny が必要になります
     shape[field.key] = field.required
       ? base.min(1, `${field.label}を入力してください`)
       : base.optional().default("");
   }
 
-  return z.object(shape) as z.ZodObject<Record<string, z.ZodString>>;
+  return z.object(shape);
 }
