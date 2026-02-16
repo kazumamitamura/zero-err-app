@@ -27,6 +27,10 @@ All development must follow the rules in **`.cursor/rules/zero-err-app.mdc`** (n
 2. Run migrations in order: `001_ze_templates.sql` → `002_fix_json_keys.sql` → `003_ze_profiles.sql` → `004_migrate_profiles_to_ze_if_exists.sql`.
 3. `npm install` then `npm run dev`.
 
+## 使い方（テンプレートの追加）
+
+**自分のテンプレートを追加する手順**は [docs/how-to-add-template.md](docs/how-to-add-template.md) にまとめています。ログイン → ホームの「テンプレートを追加」→ 本文に `{{キー名}}` で入力欄を指定 → 「本文から入力項目を自動抽出」→ 保存、の流れです。
+
 ## Structure
 
 - `src/features/ze_templates/` — template types, ZeTemplateCard.
