@@ -1,35 +1,39 @@
 "use client";
 
-import { ZeTemplateCard } from "@/features/ze_templates";
-import type { ZeTemplate } from "@/features/ze_templates/types";
-import { ZeGeneratorWizard } from "@/features/ze_generator";
-import { useState } from "react";
+import Link from "next/link";
+import { ZeTemplateCard, useZeTemplatesList } from "@/features/ze_templates";
 
 export default function TemplatesPage() {
-  const [selected, setSelected] = useState<ZeTemplate | null>(null);
-  const [templates] = useState<ZeTemplate[]>([]);
-
-  if (selected) {
-    return (
-      <main className="mx-auto max-w-2xl px-4 py-8">
-        <ZeGeneratorWizard template={selected} onBack={() => setSelected(null)} />
-      </main>
-    );
-  }
+  const { templates, loading, error } = useZeTemplatesList();
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold text-slate-800">Use Template</h1>
-      {templates.length === 0 ? (
-        <p className="text-slate-600">No templates yet. Create one from home.</p>
-      ) : (
+
+      {loading && (
+        <p className="text-slate-600">読み込み中…</p>
+      )}
+
+      {error && (
+        <p className="text-red-600" role="alert">
+          テンプレートの取得に失敗しました。
+        </p>
+      )}
+
+      {!loading && !error && templates.length === 0 && (
+        <p className="text-slate-600">テンプレートがありません。ホームから新規作成できます。</p>
+      )}
+
+      {!loading && !error && templates.length > 0 && (
         <div className="grid gap-3">
           {templates.map((template) => (
-            <ZeTemplateCard
+            <Link
               key={template.id}
-              template={template}
-              onSelect={setSelected}
-            />
+              href={`/templates/use/${template.id}`}
+              className="block focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 rounded-xl"
+            >
+              <ZeTemplateCard template={template} />
+            </Link>
           ))}
         </div>
       )}
