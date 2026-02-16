@@ -1,5 +1,5 @@
 export { ZeGeneratorWizard } from "./ZeGeneratorWizard";
-export { zeReplacePlaceholders } from "./zeReplacePlaceholders";
+export { zeReplacePlaceholders, zeFormatValueByField } from "./zeReplacePlaceholders";
 export { zeBuildFormSchema } from "./zeBuildFormSchema";
 export { zeExtractPlaceholderKeys } from "./zeExtractPlaceholderKeys";
 export { zeBuildPreviewSegments, zeSegmentsToPlainText } from "./zeBuildPreviewSegments";
