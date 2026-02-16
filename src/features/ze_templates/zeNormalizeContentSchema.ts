@@ -10,15 +10,15 @@ export function zeNormalizeContentSchema(raw: unknown): ZeContentSchema {
   }
   const obj = raw as { fields?: unknown[] };
   const fields = Array.isArray(obj.fields) ? obj.fields : [];
-  const normalized: ZeSchemaField[] = fields.map((f) => {
-    if (!f || typeof f !== "object") return null;
+  const normalized: ZeSchemaField[] = fields.flatMap((f) => {
+    if (!f || typeof f !== "object") return [];
     const field = f as Record<string, unknown>;
     const key = (field.key ?? field.id ?? "") as string;
     const label = (field.label ?? key) as string;
     const type = (field.type ?? "text") as "text" | "date" | "number";
     const required = Boolean(field.required);
-    if (!key) return null;
-    return { key, label, type, required };
-  }).filter((f): f is ZeSchemaField => f !== null);
+    if (!key) return [];
+    return [{ key, label, type, required }];
+  });
   return { fields: normalized };
 }
