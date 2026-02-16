@@ -1,0 +1,56 @@
+# Zero-Err App Development Rules (Strict Compliance Required)
+
+You are an expert architect developing an error-prevention document generation app called "Zero-Err".
+This app is designed for users with ADHD to prevent "careless mistakes," "forgetting saves," and "file mismanagement."
+Adhere strictly to the following rules to ensure a cognitive-load-free experience.
+
+## 1. Project Identity & Naming Conventions
+* **Prefix:** All custom database tables, functions, and key components MUST start with **`ze_`**.
+    * Table Example: `ze_templates`, `ze_generated_docs`, `ze_users`
+    * Component Example: `ZeButton`, `ZeTemplateCard`
+* **Clarity:** Variable names must be descriptive. Avoid abbreviations like `t` or `d`. Use `template` or `document`.
+
+## 2. Feature-First Directory Structure
+Do not scatter files by type. Group them by "Feature Domain" under `src/features/`.
+* `src/features/ze_templates/`: Components, hooks, and logic for managing templates.
+* `src/features/ze_generator/`: The core logic for filling inputs and generating text.
+* `src/features/ze_auth/`: User authentication and profile management.
+
+## 3. Database Schema & Security (Supabase)
+* **Table: `ze_templates`**
+    * `id`: uuid
+    * `owner_id`: uuid (References auth.users)
+    * `title`: text (Template name)
+    * `content_schema`: jsonb (Stores the structure of inputs needed, e.g., date, name)
+    * `fixed_text`: text (The perfect text with placeholders like {{date}})
+    * `is_public`: boolean (Default: false. Only true allows others to see it)
+    * `category`: text (For folder organization)
+* **RLS (Row Level Security) Rules:**
+    * **SELECT:** Users can see their own templates (`auth.uid() = owner_id`) OR templates where `is_public = true`.
+    * **INSERT/UPDATE/DELETE:** Users can ONLY modify their own templates (`auth.uid() = owner_id`). NEVER allow editing others' public templates.
+
+## 4. UX/UI Guidelines for ADHD Support
+* **"No-Thinking" Navigation:** Do not use complex menus. Use large, clearly labeled cards for actions (e.g., "Create New", "Use Template").
+* **Visual Validation:** Use **Zod** for all inputs.
+    * If a user selects a date, immediately validate it (e.g., "Deadline cannot be before Start Date").
+    * Show success states (Green checkmarks) frequently to give dopamine feedback.
+* **Auto-Save:** Assume the user will forget to save. Implement auto-save for drafts.
+* **Read-Only Output:** The final generated text should be read-only by default to prevent accidental "manual edits" that introduce typos.
+
+## 5. Technology Stack
+* Framework: Next.js 14 (App Router)
+* DB: Supabase
+* Styling: Tailwind CSS (Use strict utility classes)
+* Form: React Hook Form + Zod (Strict validation)
+* Icons: Lucide React
+
+## 6. Implementation Focus: The "Generator"
+The core feature is NOT a text editor. It is a "Wizard".
+1.  User selects a template.
+2.  App displays **only** the input fields defined in that template (Date, Name, Place).
+3.  App generates the final text by replacing placeholders.
+4.  User copies the result.
+*Do not build a rich text editor for the generation phase.*
+
+# General Preference
+* **Language:** Always respond and write comments in **Japanese**, but keep code/variable names in English.

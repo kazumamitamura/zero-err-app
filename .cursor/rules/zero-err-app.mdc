@@ -1,0 +1,47 @@
+---
+description: Zero-Err app architecture, naming, DB, UX, and generator wizard rules
+alwaysApply: true
+---
+
+# Zero-Err App Development Rules (Strict Compliance)
+
+Error-prevention document generation app for users with ADHD. Prevent careless mistakes, forgotten saves, and file mismanagement.
+
+## 1. Naming (ze_ prefix)
+
+- **DB:** All custom tables/functions start with `ze_` (e.g. `ze_templates`, `ze_generated_docs`, `ze_users`).
+- **Components:** Prefix with `Ze` (e.g. `ZeButton`, `ZeTemplateCard`).
+- **Variables:** Descriptive names only (use `template`, `document`; avoid `t`, `d`).
+
+## 2. Feature-first structure
+
+Group by feature under `src/features/`, not by type:
+
+- `src/features/ze_templates/` — template CRUD, list, schema.
+- `src/features/ze_generator/` — wizard: inputs → placeholder replacement → output.
+- `src/features/ze_auth/` — auth and profile.
+
+## 3. Database (Supabase) & RLS
+
+- **ze_templates:** `id` (uuid), `owner_id` (uuid → auth.users), `title` (text), `content_schema` (jsonb), `fixed_text` (text), `is_public` (boolean, default false), `category` (text).
+- **SELECT:** Own rows OR `is_public = true`. **INSERT/UPDATE/DELETE:** Only own rows (`auth.uid() = owner_id`). Never allow editing others’ public templates.
+
+## 4. UX/UI (ADHD-friendly)
+
+- **Navigation:** Large, clearly labeled action cards (e.g. “Create New”, “Use Template”). No complex menus.
+- **Validation:** Zod for all inputs. Validate immediately (e.g. “Deadline cannot be before Start Date”). Show success states (e.g. green checkmarks).
+- **Auto-save:** Implement for drafts; assume user may forget to save.
+- **Output:** Final generated text is read-only by default to avoid accidental edits/typos.
+
+## 5. Stack
+
+- Next.js 14 (App Router), Supabase, Tailwind (strict utilities), React Hook Form + Zod, Lucide React.
+
+## 6. Generator = Wizard (not editor)
+
+1. User selects a template.
+2. App shows only input fields from that template (e.g. Date, Name, Place).
+3. App generates text by replacing placeholders (e.g. `{{date}}`).
+4. User copies result.
+
+Do **not** build a rich text editor for the generation phase.
