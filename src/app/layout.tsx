@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
+import { ZeHeader } from "@/components/ZeHeader";
 
 export const metadata: Metadata = {
   title: "Zero-Err",
@@ -14,6 +15,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">
+        <ZeHeader />
         {children}
       </body>
     </html>
