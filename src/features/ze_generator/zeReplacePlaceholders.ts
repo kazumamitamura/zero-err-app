@@ -1,9 +1,43 @@
-import { format, parseISO } from "date-fns";
+import { format, parseISO, isValid } from "date-fns";
 import { ja } from "date-fns/locale";
 import type { ZeSchemaField } from "../ze_templates/types";
 
 /**
- * 日付フィールドなら日本語表記（例: 2月16日(金)）に変換。それ以外はそのまま。パース失敗時は元の文字列を返す。
+ * 日付文字列を Date にパースする。
+ * YYYY-MM-DD / YYYY/MM/DD / MM-DD(当年) に対応。失敗時は null。
+ */
+function zeParseDate(value: string): Date | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+
+  let normalized = trimmed.replace(/\//g, "-");
+  const currentYear = new Date().getFullYear();
+
+  if (/^\d{1,2}-\d{1,2}$/.test(normalized)) {
+    normalized = `${currentYear}-${normalized}`;
+  }
+
+  const parts = normalized.split("-");
+  if (parts.length === 3) {
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10) - 1;
+    const d = parseInt(parts[2], 10);
+    const dateObj = new Date(y, m, d);
+    if (isValid(dateObj)) return dateObj;
+  }
+
+  try {
+    const iso = parseISO(trimmed);
+    if (isValid(iso)) return iso;
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+/**
+ * 日付フィールドなら日本語表記（例: 2月16日(月)）に変換。それ以外はそのまま。パース失敗時は元の文字列を返す。
+ * YYYY-MM-DD / YYYY/MM/DD / MM/DD(当年) などの入力に対応。
  */
 export function zeFormatValueByField(
   value: string,
@@ -11,13 +45,12 @@ export function zeFormatValueByField(
 ): string {
   if (!value) return value;
   if (!field || field.type !== "date") return value;
-  try {
-    const date = parseISO(value);
-    if (Number.isNaN(date.getTime())) return value;
-    return format(date, "M月d日(eee)", { locale: ja });
-  } catch {
-    return value;
+
+  const dateObj = zeParseDate(value);
+  if (dateObj) {
+    return format(dateObj, "M月d日(eee)", { locale: ja });
   }
+  return value;
 }
 
 /**
